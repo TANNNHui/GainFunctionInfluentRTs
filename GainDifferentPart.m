@@ -1,12 +1,12 @@
 close all; clear all;
-tic;
 
+tic;
 %Parameter setting
 z1= 1; % Upper decision threshold (choice 1)
 z2= -1; % Lower decision threshol (choice 2)
 dt=1; % Time step 5ms
 
-trials=1000; % Trial number
+trials=1000000; % Trial number
 
 k=9.66*10^(-3); % the proportionality factor to form the mean of the drift rate, k=9.66*10^(-3)when both, 1*10^(-3)
 Mo_Strength=[0:0.01:0.03 0.032 0.04:0.01:0.51 0.512 0.52:0.01:1]; % the the motion strength
@@ -16,7 +16,6 @@ Sx=0.0028;
 d=584; % by ms
 G=Sy.*exp(Sx*(ti-d))./(1+exp(Sx*(ti-d)))+(1+(1-Sy)*exp(-Sx*d))/(1+exp(-Sx*d));
 sigma0=0.0188; % Size of the noise 
-
 
 AveDTc_initial=zeros(1,length(Mo_Strength));
 AveDTe_initial=zeros(1,length(Mo_Strength));
@@ -58,12 +57,16 @@ for c=Mo_Strength
     DTc1(DTc1==0)=[];
     DTe1(DTe1==0)=[];
     if(c==0.032)
-        DTc1_032=DTc1;
-        DTe1_032=DTe1;
+        DTc1_032=DTc1/max(DTc1);
+        DTe1_032=DTe1/max(DTe1);
+        DTc1_032(DTc1_032==0)=[];
+        DTe1_032(DTe1_032==0)=[];
     end
     if(c==0.512)
-        DTc1_512=DTc1;
-        DTe1_512=DTe1;
+        DTc1_512=DTc1/max(DTc1);
+        DTe1_512=DTe1/max(DTe1);
+        DTc1_512(DTc1_512==0)=[];
+        DTe1_512(DTe1_512==0)=[];      
     end
     AveDTc_initial(j)=dt.*mean(DTc1); %Calculate the average decision time
     AveDTe_initial(j)=dt.*mean(DTe1);
@@ -96,12 +99,16 @@ for c=Mo_Strength
     DTc2(DTc2==0)=[];
     DTe2(DTe2==0)=[];
     if(c==0.032)
-        DTc2_032=DTc2;
-        DTe2_032=DTe2;
+        DTc2_032=DTc2/max(DTc2);
+        DTe2_032=DTe2/max(DTe2);
+        DTc2_032(DTc2_032==0)=[];
+        DTe2_032(DTe2_032==0)=[]; 
     end
     if(c==0.512)
-        DTc2_512=DTc2;
-        DTe2_512=DTe2;
+        DTc2_512=DTc2/max(DTc2);
+        DTe2_512=DTe2/max(DTe2);
+        DTc2_512(DTc2_512==0)=[];
+        DTe2_512(DTe2_512==0)=[]; 
     end
     AveDTc_both(j)=dt.*mean(DTc2); %Calculate the average decision time
     AveDTe_both(j)=dt.*mean(DTe2);
@@ -112,15 +119,17 @@ AveDTc_both=AveDTc_both/max(AveDTc_both);
 AveDTe_both=AveDTe_both/max(AveDTe_both);
 
 %% time-variant gain only on noise term
+
 j=1;
 for c=Mo_Strength
     DTc3=zeros(1,trials); % Correct decision time
     DTe3=zeros(1,trials); % Error decision time 
     Mu0=k*c;% Drift rate
+    sigma=sigma0*sqrt(1+c);
     for i=1:trials % Trial number
         x3=zeros(1,length(ti)); % initial x value = '0'
         for t=1:length(ti)
-            x3(t+1)=x3(t) + dt*Mu0 + sqrt(dt)*sigma0*G(t)*randn;% Update x;
+            x3(t+1)=x3(t) + dt*Mu0 + sqrt(dt)*sigma*G(t)*randn;% Update x;
             if x3(t) >= 1 % Record the correct decision time
                 DTc3(i)=t;
                 break;
@@ -134,12 +143,16 @@ for c=Mo_Strength
     DTc3(DTc3==0)=[];
     DTe3(DTe3==0)=[];
     if(c==0.032)
-        DTc3_032=DTc3;
-        DTe3_032=DTe3;
+        DTc3_032=DTc3/max(DTc3);
+        DTe3_032=DTe3/max(DTe3);
+        DTc3_032(DTc3_032==0)=[];
+        DTe3_032(DTe3_032==0)=[]; 
     end
     if(c==0.512)
-        DTc3_512=DTc3;
-        DTe3_512=DTe3;
+        DTc3_512=DTc3/max(DTc3);
+        DTe3_512=DTe3/max(DTe3);
+        DTc3_512(DTc3_512==0)=[];
+        DTe3_512(DTe3_512==0)=[]; 
     end
     AveDTc_onlyDrift(j)=dt.*mean(DTc3); %Calculate the average decision time
     AveDTe_onlyDrift(j)=dt.*mean(DTe3);
@@ -172,12 +185,16 @@ for c=Mo_Strength
     DTc4(DTc4==0)=[];
     DTe4(DTe4==0)=[];
     if(c==0.032)
-        DTc4_032=DTc4;
-        DTe4_032=DTe4;
+        DTc4_032=DTc4/max(DTc4);
+        DTe4_032=DTe4/max(DTe4);
+        DTc4_032(DTc4_032==0)=[];
+        DTe4_032(DTe4_032==0)=[];
     end
     if(c==0.512)
-        DTc4_512=DTc4;
-        DTe4_512=DTe4;
+        DTc4_512=DTc4/max(DTc4);
+        DTe4_512=DTe4/max(DTe4);
+        DTc4_512(DTc4_512==0)=[];
+        DTe4_512(DTe4_512==0)=[];
     end
     AveDTc_onlyNoise(j)=dt.*mean(DTc4); %Calculate the average decision time
     AveDTe_onlyNoise(j)=dt.*mean(DTe4);
@@ -305,5 +322,4 @@ legend('51.2%, Correct DT');
 subplot(4,4,16);
 histogram(DTe4_512,50,'FaceColor','r'); title('DT under condition iv');
 legend('51.2%, Error DT');
-
 toc;
