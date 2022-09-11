@@ -1,2 +1,2 @@
 # GainFunctionInfluentRTs
-The dataset is in the relation on the right, and the tag is 'DataSet'
+The dataset is in the Releases, and the tag is 'DataSet'
