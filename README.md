@@ -1,2 +1,2 @@
 # GainFunctionInfluentRTs
-The dataset is in the Releases, and the tag is 'DataSet'
+These documents are related to the article: "Time-variant gain in noise but not signal in drift-diffusion model leads to slower decisions"
