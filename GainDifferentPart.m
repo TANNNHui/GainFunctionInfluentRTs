@@ -6,7 +6,7 @@ z1= 1; % Upper decision threshold (choice 1)
 z2= -1; % Lower decision threshol (choice 2)
 dt=1; % Time step 5ms
 
-trials=1000; % Trial number
+trials=1000000; % Trial number
 
 k=9.66*10^(-3); % the proportionality factor to form the mean of the drift rate, k=9.66*10^(-3)when both, 1*10^(-3)
 Mo_Strength=[0:0.01:0.03 0.032 0.04:0.01:0.51 0.512 0.52:0.01:1]; % the the motion strength
@@ -128,7 +128,7 @@ for c=Mo_Strength
     for i=1:trials % Trial number
         x3=zeros(1,length(ti)); % initial x value = '0'
         for t=1:length(ti)
-            x3(t+1)=x3(t) + dt*Mu0 + sqrt(dt)*sigma0*randn;% Update x;
+            x3(t+1)=x3(t) + dt*Mu0 + sqrt(dt)*G(t)*sigma0*randn;% Update x;
             if x3(t) >= 1 % Record the correct decision time
                 DTc3(i)=t;
                 break;
