@@ -6,7 +6,7 @@ z1= 1; % Upper decision threshold (choice 1)
 z2= -1; % Lower decision threshol (choice 2)
 dt=1; % Time step 5ms
 
-trials=1000000; % Trial number
+trials=2500; % Trial number
 
 k=9.66*10^(-3); % the proportionality factor to form the mean of the drift rate, k=9.66*10^(-3)when both, 1*10^(-3)
 Mo_Strength=[0:0.01:0.03 0.032 0.04:0.01:0.51 0.512 0.52:0.01:1]; % the the motion strength
@@ -25,12 +25,12 @@ AveDTc_both=zeros(1,length(Mo_Strength));
 AveDTe_both=zeros(1,length(Mo_Strength));
 ac2=zeros(1,length(Mo_Strength));
 
-AveDTc_onlyDrift=zeros(1,length(Mo_Strength));
-AveDTe_onlyDrift=zeros(1,length(Mo_Strength));
-ac3=zeros(1,length(Mo_Strength));
-
 AveDTc_onlyNoise=zeros(1,length(Mo_Strength));
 AveDTe_onlyNoise=zeros(1,length(Mo_Strength));
+ac3=zeros(1,length(Mo_Strength));
+
+AveDTc_onlyDrift=zeros(1,length(Mo_Strength));
+AveDTe_onlyDrift=zeros(1,length(Mo_Strength));
 ac4=zeros(1,length(Mo_Strength));
 
 %% time-variant gain on both drift rate and noise term with noise depending on c
@@ -57,14 +57,18 @@ for c=Mo_Strength
     DTc1(DTc1==0)=[];
     DTe1(DTe1==0)=[];
     if(c==0.032)
-        DTc1_032=(DTc1-min(DTc1))/(max(DTc1)-min(DTc1));
-        DTe1_032=(DTe1-min(DTe1))/(max(DTe1)-min(DTe1));
+        ma=max([DTc1 DTe1]);
+        mi=min([DTc1 DTe1]);
+        DTc1_032=(DTc1-mi)/(ma-mi);
+        DTe1_032=(DTe1-mi)/(ma-mi);
         DTc1_032(DTc1_032==0)=[];
         DTe1_032(DTe1_032==0)=[];
     end
     if(c==0.512)
-        DTc1_512=(DTc1-min(DTc1))/(max(DTc1)-min(DTc1));
-        DTe1_512=(DTe1-min(DTe1))/(max(DTe1)-min(DTe1));
+        ma=max([DTc1 DTe1]);
+        mi=min([DTc1 DTe1]);
+        DTc1_512=(DTc1-mi)/(ma-mi);
+        DTe1_512=(DTe1-mi)/(ma-mi);
         DTc1_512(DTc1_512==0)=[];
         DTe1_512(DTe1_512==0)=[];      
     end
@@ -73,8 +77,10 @@ for c=Mo_Strength
     ac1(j)=length(DTc1)/(length(DTc1)+length(DTe1));
     j=j+1;
 end
-AveDTc_initial=(AveDTc_initial-min(AveDTc_initial))/(max(AveDTc_initial)-min(AveDTc_initial));
-AveDTe_initial=(AveDTe_initial-min(AveDTe_initial))/(max(AveDTe_initial)-min(AveDTe_initial));
+ma=max([AveDTc_initial AveDTe_initial]);
+mi=min([AveDTc_initial AveDTe_initial]);
+AveDTc_initial=(AveDTc_initial-mi)/(ma-mi);
+AveDTe_initial=(AveDTe_initial-mi)/(ma-mi);
 
 %% time-variant gain on both drift rate and noise term with noise independent of c
 j=1;
@@ -99,14 +105,18 @@ for c=Mo_Strength
     DTc2(DTc2==0)=[];
     DTe2(DTe2==0)=[];
     if(c==0.032)
-        DTc2_032=(DTc2-min(DTc2))/(max(DTc2)-min(DTc2));
-        DTe2_032=(DTe2-min(DTe2))/(max(DTe2)-min(DTe2));
+        ma=max([DTc2 DTe2]);
+        mi=min([DTc2 DTe2]);
+        DTc2_032=(DTc2-mi)/(ma-mi);
+        DTe2_032=(DTe2-mi)/(ma-mi);
         DTc2_032(DTc2_032==0)=[];
         DTe2_032(DTe2_032==0)=[]; 
     end
     if(c==0.512)
-        DTc2_512=(DTc2-min(DTc2))/(max(DTc2)-min(DTc2));
-        DTe2_512=(DTe2-min(DTe2))/(max(DTe2)-min(DTe2));
+        ma=max([DTc2 DTe2]);
+        mi=min([DTc2 DTe2]);
+        DTc2_512=(DTc2-mi)/(ma-mi);
+        DTe2_512=(DTe2-mi)/(ma-mi);
         DTc2_512(DTc2_512==0)=[];
         DTe2_512(DTe2_512==0)=[]; 
     end
@@ -115,8 +125,10 @@ for c=Mo_Strength
     ac2(j)=length(DTc2)/(length(DTc2)+length(DTe2));
     j=j+1;
 end
-AveDTc_both=(AveDTc_both-min(AveDTc_both))/(max(AveDTc_both)-min(AveDTc_both));
-AveDTe_both=(AveDTe_both-min(AveDTe_both))/(max(AveDTe_both)-min(AveDTe_both));
+ma=max([AveDTc_both AveDTe_both]);
+mi=min([AveDTc_both AveDTe_both]);
+AveDTc_both=(AveDTc_both-mi)/(ma-mi);
+AveDTe_both=(AveDTe_both-mi)/(ma-mi);
 
 %% time-variant gain only on noise term
 
@@ -142,14 +154,18 @@ for c=Mo_Strength
     DTc3(DTc3==0)=[];
     DTe3(DTe3==0)=[];
     if(c==0.032)
-        DTc3_032=(DTc3-min(DTc3))/(max(DTc3)-min(DTc3));
-        DTe3_032=(DTe3-min(DTe3))/(max(DTe3)-min(DTe3));
+        ma=max([DTc3 DTe3]);
+        mi=min([DTc3 DTe3]);
+        DTc3_032=(DTc3-mi)/(ma-mi);
+        DTe3_032=(DTe3-mi)/(ma-mi);
         DTc3_032(DTc3_032==0)=[];
         DTe3_032(DTe3_032==0)=[]; 
     end
     if(c==0.512)
-        DTc3_512=(DTc3-min(DTc3))/(max(DTc3)-min(DTc3));
-        DTe3_512=(DTe3-min(DTe3))/(max(DTe3)-min(DTe3));
+        ma=max([DTc3 DTe3]);
+        mi=min([DTc3 DTe3]);
+        DTc3_512=(DTc3-mi)/(ma-mi);
+        DTe3_512=(DTe3-mi)/(ma-mi);
         DTc3_512(DTc3_512==0)=[];
         DTe3_512(DTe3_512==0)=[]; 
     end
@@ -158,8 +174,10 @@ for c=Mo_Strength
     ac3(j)=length(DTc3)/(length(DTc3)+length(DTe3));
     j=j+1;
 end
-AveDTc_onlyNoise=(AveDTc_onlyNoise-min(AveDTc_onlyNoise))/(max(AveDTc_onlyNoise)-min(AveDTc_onlyNoise));
-AveDTe_onlyNoise=(AveDTe_onlyNoise-min(AveDTe_onlyNoise))/(max(AveDTe_onlyNoise)-min(AveDTe_onlyNoise));
+ma=max([AveDTc_onlyNoise AveDTe_onlyNoise]);
+mi=min([AveDTc_onlyNoise AveDTe_onlyNoise]);
+AveDTc_onlyNoise=(AveDTc_onlyNoise-mi)/(ma-mi);
+AveDTe_onlyNoise=(AveDTe_onlyNoise-mi)/(ma-mi);
 
 %% time-variant gain only on drift rate
 j=1;
@@ -184,14 +202,18 @@ for c=Mo_Strength
     DTc4(DTc4==0)=[];
     DTe4(DTe4==0)=[];
     if(c==0.032)
-        DTc4_032=(DTc4-min(DTc4))/(max(DTc4)-min(DTc4));
-        DTe4_032=(DTe4-min(DTe4))/(max(DTe4)-min(DTe4));
+        ma=max([DTc4 DTe4]);
+        mi=min([DTc4 DTe4]);
+        DTc4_032=(DTc4-mi)/(ma-mi);
+        DTe4_032=(DTe4-mi)/(ma-mi);
         DTc4_032(DTc4_032==0)=[];
         DTe4_032(DTe4_032==0)=[];
     end
     if(c==0.512)
-        DTc4_512=(DTc4-min(DTc4))/(max(DTc4)-min(DTc4));
-        DTe4_512=(DTe4-min(DTe4))/(max(DTe4)-min(DTe4));
+        ma=max([DTc4 DTe4]);
+        mi=min([DTc4 DTe4]);
+        DTc4_512=(DTc4-mi)/(ma-mi);
+        DTe4_512=(DTe4-mi)/(ma-mi);
         DTc4_512(DTc4_512==0)=[];
         DTe4_512(DTe4_512==0)=[];
     end
@@ -200,8 +222,10 @@ for c=Mo_Strength
     ac4(j)=length(DTc4)/(length(DTc4)+length(DTe4));
     j=j+1;
 end
-AveDTc_onlyDrift=(AveDTc_onlyDrift-min(AveDTc_onlyDrift))/(max(AveDTc_onlyDrift)-min(AveDTc_onlyDrift));
-AveDTe_onlyDrift=(AveDTe_onlyDrift-min(AveDTe_onlyDrift))/(max(AveDTe_onlyDrift)-min(AveDTe_onlyDrift));
+ma=max([AveDTc_onlyDrift AveDTe_onlyDrift]);
+mi=min([AveDTc_onlyDrift AveDTe_onlyDrift]);
+AveDTc_onlyDrift=(AveDTc_onlyDrift-mi)/(ma-mi);
+AveDTe_onlyDrift=(AveDTe_onlyDrift-mi)/(ma-mi);
 
 %% Plot the 4x2 MotionStrength vs DT and Accuracy figure
 figure;
@@ -271,7 +295,7 @@ set(gca,'FontSize',12);
 
 figure; 
 subplot(4,4,1);
-histogram(DTc1_032,50); title('DT under condition i');
+histogram(DTc1_032,'DisplayName','a','FaceColor',[0 0 1],'NumBins',50); title('DT under condition i');
 legend('3.2%, Correct DT');
 subplot(4,4,2);
 histogram(DTe1_032,50,'FaceColor','r'); title('DT under condition i');
