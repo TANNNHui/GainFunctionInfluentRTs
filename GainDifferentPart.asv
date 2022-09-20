@@ -8,7 +8,7 @@ dt=1; % Time step 5ms
 
 trials=2500; % Trial number
 
-k=9.66*10^(-3); % the proportionality factor to form the mean of the drift rate
+k=9.66*10^(-3); % the proportionality factor to form the mean of the drift rate, k=9.66*10^(-3)when both, 1*10^(-3)
 Mo_Strength=[0:0.01:0.03 0.032 0.04:0.01:0.25 0.256 0.26:0.01:1]; % the the motion strength
 ti=1:dt:2000; % Time < 2s
 Sy=7.34; % when G both: 7.34, sigle 0.734
