@@ -1,7 +1,14 @@
-clearvars; close all;
-current_path = pwd;
-load([current_path filesep 'Hui paper' filesep 'dataset.mat']) % change path to load the dataset
-coherence_level = {'256'; '032'};
+close all; clear
+filePath = matlab.desktop.editor.getActiveFilename;
+for i = length(filePath):-1:1
+    if filePath(i) == filesep
+        slash(i,1) = 1;
+    end
+end
+filePath = filePath(1:length(slash) ); cd (filePath);   % change to code's path to load the dataset
+load([filePath filesep 'dataset and figures' filesep 'dataset.mat']) 
+%% Assigning variables
+coherence_level = {'128'; '032'};
 correct_error = {'c'; 'e'};
 case_numbers = 4;
 group_number = 1;
@@ -15,9 +22,6 @@ for case_number = 1 : case_numbers
                 trials_tmp(:,1) = group_number * ones(case_length, 1);
                 group_name_tmp = (['DT' correct_error{correctness} num2str(case_number) '_' coherence_level{coherence}]);
                 group_name = [group_name; group_name_tmp];
-%                 trials_tmp(:,2) = case_number * ones(case_length, 1);
-%                 trials_tmp(:,3) = coherence * ones(case_length, 1);
-%                 trials_tmp(:,4) = correctness * ones(case_length, 1);
                 trials_tmp(:,2) = (eval(['DT' correct_error{correctness} num2str(case_number) '_' coherence_level{coherence}]))';
             end
             trials = [trials;trials_tmp];
@@ -28,12 +32,16 @@ for case_number = 1 : case_numbers
     end
 end
 
-% [p, observeddifference, effectsize] = permutationTest(DTc4_512, DTc4_032, 20000, 'plotresult', 1, 'showprogress', 250);
-% group_name = cellstr(num2str(trials(:,1)));
+%% Performing Kruskal-Wallis test
 final_group_name = cellstr(group_name);
 [p,tbl,stats] = kruskalwallis(trials(:,2),trials(:,1), 'on');
 figure
-c = multcompare(stats, "CriticalValueType","tukey-kramer");
+c = multcompare(stats, "CriticalValueType","tukey-kramer");     % pairwise comparisons
+tbl = array2table(c,"VariableNames", ...
+    ["Group A","Group B","Lower Limit","A-B","Upper Limit","P-value"]);
 non_significant_groups = find(c(:,6) > 0.001);
 non_significant_groups_pair(:,1) = final_group_name(c(non_significant_groups,1));
-non_significant_groups_pair(:,2) = final_group_name(c(non_significant_groups,2))
+non_significant_groups_pair(:,2) = final_group_name(c(non_significant_groups,2));
+disp('Non-significant pairs:')
+non_significant_groups_pair
+

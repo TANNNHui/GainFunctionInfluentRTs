@@ -13,18 +13,18 @@ trials=1000000; % Trial number can be reduced to 100
 
 error_trial_number_threshold = floor(trials/1000) + 1; % mean reaction time of error trials gets equaled to NaN if the number of error trials is below threshold in each motion strength
 
-interpolation_method = 'linear';    % interpolation method for subtituting zero values in mean reaction times of error trials up until the last non-zero element if needed
+interpolation_method = 'linear';                       % interpolation method for subtituting zero values in mean reaction times of error trials up until the last non-zero element if needed
 
-k=9.66*10^(-3); % the proportionality factor to form the mean of the drift rate
+k=9.66*10^(-3);                                        % the proportionality factor to form the mean of the drift rate
 Mo_Strength=[0:0.01:0.03 0.032 0.04:0.01:0.12 0.128 0.13:0.01:0.25 0.256 0.26:0.01:1]; % the the motion strength
 ti=0:dt:2000; % Time < 2s
 Sy=7.34; % when G both: 7.34, sigle 0.734
 Sx=0.0028;
 d=584; % by ms
 G=Sy.*exp(Sx*(ti-d))./(1+exp(Sx*(ti-d)))+(1+(1-Sy)*exp(-Sx*d))/(1+exp(-Sx*d));
-sigma0=0.0188; % Size of the noise 
+sigma0=0.0188;                                         % Size of the noise 
 
-T_res=261;  % Delay between decision time and reaction time based on t_residual of Model 4 in (Ditterich, 2006)
+T_res=261;                                             % Delay between decision time and reaction time based on t_residual of Model 4 in (Ditterich, 2006)
 
 AveDTc_initial=zeros(1,length(Mo_Strength));
 AveDTe_initial=zeros(1,length(Mo_Strength));
@@ -337,11 +337,17 @@ for row_num = 1 : num_of_subplots/2
         switch column_num
             case 1
                 plot1{subplot_num} = plot(X1{column_num},YMatrix{row_num, column_num},'LineWidth',5);
-                set(plot1{subplot_num}(1),'DisplayName','Correct','Color',[0 0 1]);
-                set(plot1{subplot_num}(2),'DisplayName','Error','Color',[1 0 0]);
+                set(plot1{subplot_num}(1),'DisplayName','Correct','Color',[0 0 1], 'LineWidth',4);
+                set(plot1{subplot_num}(2),'DisplayName','Error','Color',[1 0 0], 'LineWidth',4);
+                if size(YMatrix{row_num, column_num},1) > 2
+                    set(plot1{subplot_num}(3),'DisplayName','error DT (approx FPT)','Color',[0.7 0.7 0.7], 'LineWidth',3);
+                    set(plot1{subplot_num}(4),'DisplayName','correct DT (approx FPT)','Color',[ 0.5843 0.8157 0.9882], 'LineWidth',3);
+                end
                 title(['Case (' case_number{row_num} ')']);
                 % Set the rest of the axes properties
-                set(subplot1(subplot_num),'FontSize',16,'LineWidth',2,'TickDir','out');
+                set(subplot1(subplot_num),'FontSize',16,'TickDir','out');
+                    ylim(subplot1(subplot_num), [T_res 1000]);
+                    set(subplot1(subplot_num), 'YTick', [T_res 600 1000],'YTickLabel',{num2str(T_res),'600','1000'});
                 % create legend
                 if subplot_num == 1
                     legend1 = legend(subplot1(subplot_num),'show');
@@ -349,15 +355,25 @@ for row_num = 1 : num_of_subplots/2
                         'Position',[0.364390839087796 0.865014403540914 0.0896107984202805 0.0765746516829394]);
                 end
                 if row_num == num_of_subplots/2
-                    xlabel(common_xlabel{column_num});
+                    xlabel(common_xlabel{1}, 'FontWeight','bold', 'FontSize', 24);
                 end
             case 2
-                plot(X1{column_num},YMatrix{row_num, column_num},'LineWidth',3.5,'Color',[0.717647058823529 0.274509803921569 1]);
+                plot1{subplot_num} = plot(X1{1},YMatrix{row_num, column_num},'LineWidth',3.5,'Color',[0.717647058823529 0.274509803921569 1]);
+                set(plot1{subplot_num}(1),'DisplayName','sim.', 'Color', [0 0 0], 'LineWidth',4);
+                if size(YMatrix{row_num, column_num},1) > 1
+                set(plot1{subplot_num}(2),'DisplayName','theor. aprox.','Color',[0.5 0.5 0.5], 'LineWidth',4);
+                end
                 % Set the rest of the axes properties
                 set(subplot1(subplot_num),'FontSize',16,'LineWidth',2,'TickDir','out','YTick',...
                     [0.5 0.75 1],'YTickLabel',{'50','75','100'});
+                 % create legend
+%                 if subplot_num == 2
+%                     legend1 = legend(subplot1(subplot_num),'show');
+%                     set(legend1,...
+%                         'Position',[0.804390839087796 0.805014403540914 0.0896107984202805 0.0765746516829394]);
+%                 end
                 if row_num == num_of_subplots/2
-                    xlabel(common_xlabel{column_num});
+                    xlabel(common_xlabel{1}, 'FontWeight','bold', 'FontSize', 24);
                 end
         end
 
@@ -377,7 +393,8 @@ common_ylabel_pos = mat2cell(mean_pos, 1, 4 * ones(1, length(X1)));
 ylabel_pos_bias = {[0.01 -0.05 0 0], [0.01 0 0 0]};
 for ylabel_pos_num = 1 : length(common_ylabel_pos)
                 ht(ylabel_pos_num) = annotation(figure1, 'textbox', common_ylabel_pos{ylabel_pos_num} + ylabel_pos_bias{ylabel_pos_num}, 'String', common_ylabel{ylabel_pos_num},...
-                'FontSize', 18,...
+                'FontSize', 24,...
+                'FontWeight','bold',...
                 'FitBoxToText','off',...
                  'EdgeColor','none');
                 set(ht(ylabel_pos_num),'Rotation',90)
@@ -405,7 +422,7 @@ end
 
 num_of_subplots = length(variable_name);
 subplot_names = cellstr(('a':char('a'+(num_of_subplots-1)))');
-subplots_with_title = 1:num_of_cases
+subplots_with_title = 1:num_of_cases;
 mo_strength032_correct_ylim = trials/20;
 mo_strength032_error_ylim = mo_strength032_correct_ylim;
 mo_strength128_correct_ylim = trials/10;
@@ -457,7 +474,7 @@ han=axes(figure2,'visible','off');
 han.XLabel.Visible='on';
 han.YLabel.Visible='on';
 ylh = ylabel(han,'Frequency',  'FontSize', 24, 'FontWeight','bold');
-xlh = xlabel(han,'Mean reaction time (ms)', 'FontSize', 24, 'FontWeight','bold');
+xlh = xlabel(han,'Reaction time (ms)', 'FontSize', 24, 'FontWeight','bold');
 % title(han,'yourTitle');
 xlh.Position(2) = xlh.Position(2) - abs(xlh.Position(2) * 0.2);
 ylh.Position(1) = ylh.Position(1) - abs(ylh.Position(1) * 3);
@@ -469,7 +486,7 @@ disp(['Analysis finished at ' char(datetime)])
 
 %% saving figures
 figure_save_directory_name = 'Figures';
-data_save_path = [scratch_main_dir filesep 'Hui paper'];
+data_save_path = [scratch_main_dir filesep 'dataset and figures'];
 figure_save_path = [data_save_path filesep figure_save_directory_name];
 
 % Clear unnecessary plot variables
@@ -485,9 +502,11 @@ if ~isfolder(figure_save_path)
 end
 
 figure_name = 'Figure_1';
+exportgraphics(figure1,[fullfile(figure_save_path, figure_name) '.png'],'Resolution',300);
 savefig(figure1,fullfile(figure_save_path, figure_name));
 figure_name = 'Figure_2';
 savefig(figure2,fullfile(figure_save_path, figure_name));
+exportgraphics(figure2,[fullfile(figure_save_path, figure_name) '.png'],'Resolution',300);
 
 clear figure*
 
